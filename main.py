@@ -1,8 +1,10 @@
-from csp_warmup import start
+from csp_crossword import CspCrossword
 
 
 def main():
-    start()
+    csp_crossword = CspCrossword(5, 7)
+    csp_crossword.assign_words()
+    csp_crossword.plot()
 
 
 main()
