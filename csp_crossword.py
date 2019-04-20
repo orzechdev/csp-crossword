@@ -30,7 +30,7 @@ class CspCrossword:
         ax.set_xticklabels([])
 
         for (i, j), z in np.ndenumerate(self.board_result[0]):
-            ax.text(j, i, z.upper(), ha='center', va='center', size=20)
+            ax.text(j, i, z.upper(), ha='center', va='center', size=30)
 
         plt.show()
 
