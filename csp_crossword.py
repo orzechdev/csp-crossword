@@ -20,7 +20,7 @@ class CspCrossword:
         cmap = colors.ListedColormap(['white', 'black'])
 
         fig, ax = plt.subplots()
-        ax.imshow(self.board[0], cmap=cmap)
+        ax.matshow(self.board[0], cmap=cmap)
 
         # draw gridlines
         ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=2)
@@ -28,6 +28,9 @@ class CspCrossword:
         ax.set_yticks(np.arange(-.5, self.board.shape[1], 1))
         ax.set_yticklabels([])
         ax.set_xticklabels([])
+
+        for (i, j), z in np.ndenumerate(self.board_result[0]):
+            ax.text(j, i, z.upper(), ha='center', va='center', size=20)
 
         plt.show()
 
