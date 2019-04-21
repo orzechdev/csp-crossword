@@ -45,71 +45,50 @@ class CspCrossword:
         print_title('CSP CROSSWORD: start assigning possible words')
         for col in range(0, self.board.shape[1]):
             for row in range(0, self.board.shape[2]):
-                if self.board[0, col, row] == 0 and self.board[1, col, row] == 0:
-                    length_x = self.get_require_word_length(row, col, self.WORD_DIRECTION_X)
-                    length_y = self.get_require_word_length(row, col, self.WORD_DIRECTION_Y)
-                    if length_x > 1 or length_y > 1:
+                # if self.board[0, col, row] == 0 and self.board[1, col, row] == 0:
+                if self.is_needed_word_assign(row, col, self.WORD_DIRECTION_X):
+                    length_x = self.get_require_word_length(row, col, self.WORD_DIRECTION_X)  # EDITED !!!!!!!!
+                    if length_x > 1:
                         lemmas_x = lemmas[[length_x == len(lemma) for lemma in lemmas]]
-                        if length_x > 1:
-                            for lemma_x in lemmas_x:
-                                lemma_x_possible = self.is_possible_assignment(lemma_x, row, col, self.WORD_DIRECTION_X)
-                                if lemma_x_possible:
-                                    if length_y > 1:
-                                        chars_inserted_x = self.fill_board_with_word(lemma_x, row, col, self.WORD_DIRECTION_X)
+                        for lemma_x in lemmas_x:
+                            lemma_x_possible = self.is_possible_assignment(lemma_x, row, col, self.WORD_DIRECTION_X)
+                            if lemma_x_possible:
+                                chars_inserted_x = self.fill_board_with_word(lemma_x, row, col, self.WORD_DIRECTION_X)
 
-                                        lemma_x_index = np.where(lemmas == lemma_x)[0][0]
-                                        np.delete(lemmas, lemma_x_index)
+                                lemma_x_index = np.where(lemmas == lemma_x)[0][0]
+                                np.delete(lemmas, lemma_x_index)
 
-                                        lemmas_y = lemmas[[length_y == len(lemma) for lemma in lemmas]]
-                                        for lemma_y in lemmas_y:
-                                            lemma_y_possible = self.is_possible_assignment(lemma_y, row, col, self.WORD_DIRECTION_Y)
-                                            if lemma_y_possible:
-                                                chars_inserted_y = self.fill_board_with_word(lemma_y, row, col, self.WORD_DIRECTION_Y)
+                                is_next_assigned = self.backward_assign_words(lemmas)
 
-                                                lemma_y_index = np.where(lemmas == lemma_y)[0][0]
-                                                np.delete(lemmas, lemma_y_index)
+                                if is_next_assigned:
+                                    return True
 
-                                                is_next_assigned = self.backward_assign_words(lemmas)
+                                self.remove_word_from_board(chars_inserted_x, row, col, self.WORD_DIRECTION_X)
+                                np.append(lemmas, lemma_x_index)
 
-                                                if is_next_assigned:
-                                                    return True
+                if self.is_needed_word_assign(row, col, self.WORD_DIRECTION_Y):
+                    length_x = 0  # self.get_require_word_length(row, col, self.WORD_DIRECTION_X)  # EDITED !!!!!!!!
+                    length_y = self.get_require_word_length(row, col, self.WORD_DIRECTION_Y)  # EDITED !!!!!!!!
+                    if length_y > 1:
 
-                                                self.remove_word_from_board(chars_inserted_y, row, col, self.WORD_DIRECTION_Y)
-                                                np.append(lemmas, lemma_y_index)
+                        lemmas_y = lemmas[[length_y == len(lemma) for lemma in lemmas]]
+                        for lemma_y in lemmas_y:
+                            lemma_y_possible = self.is_possible_assignment(lemma_y, row, col,
+                                                                           self.WORD_DIRECTION_Y)
+                            if lemma_y_possible:
+                                chars_inserted_y = self.fill_board_with_word(lemma_y, row, col,
+                                                                             self.WORD_DIRECTION_Y)
 
-                                        self.remove_word_from_board(chars_inserted_x, row, col, self.WORD_DIRECTION_X)
-                                        np.append(lemmas, lemma_x_index)
-                                    else:
-                                        chars_inserted_x = self.fill_board_with_word(lemma_x, row, col, self.WORD_DIRECTION_X)
+                                lemma_y_index = np.where(lemmas == lemma_y)[0][0]
+                                np.delete(lemmas, lemma_y_index)
 
-                                        lemma_x_index = np.where(lemmas == lemma_x)[0][0]
-                                        np.delete(lemmas, lemma_x_index)
+                                is_next_assigned = self.backward_assign_words(lemmas)
 
-                                        is_next_assigned = self.backward_assign_words(lemmas)
+                                if is_next_assigned:
+                                    return True
 
-                                        if is_next_assigned:
-                                            return True
-
-                                        self.remove_word_from_board(chars_inserted_x, row, col, self.WORD_DIRECTION_X)
-                                        np.append(lemmas, lemma_x_index)
-
-                        else:
-                            lemmas_y = lemmas[[length_y == len(lemma) for lemma in lemmas]]
-                            for lemma_y in lemmas_y:
-                                lemma_y_possible = self.is_possible_assignment(lemma_y, row, col, self.WORD_DIRECTION_Y)
-                                if lemma_y_possible:
-                                    chars_inserted_y = self.fill_board_with_word(lemma_y, row, col, self.WORD_DIRECTION_Y)
-
-                                    lemma_y_index = np.where(lemmas == lemma_y)[0][0]
-                                    np.delete(lemmas, lemma_y_index)
-
-                                    is_next_assigned = self.backward_assign_words(lemmas)
-
-                                    if is_next_assigned:
-                                        return True
-
-                                    self.remove_word_from_board(chars_inserted_y, row, col, self.WORD_DIRECTION_Y)
-                                    np.append(lemmas, lemma_y_index)
+                                self.remove_word_from_board(chars_inserted_y, row, col, self.WORD_DIRECTION_Y)
+                                np.append(lemmas, lemma_y_index)
 
                     # else:
                     #     self.board[1, col, row] = 1
@@ -138,9 +117,11 @@ class CspCrossword:
                 if direction == self.WORD_DIRECTION_X:
                     self.board_result[0, y, cell] = lemma[cell]
                     self.board[1, y, cell] = 1
+                    print('filled x with:' + lemma)
                 else:
                     self.board_result[0, cell, x] = lemma[cell]
                     self.board[1, cell, x] = 1
+                    print('filled y with:' + lemma)
                 np.append(chars_inserted, lemma[cell])
             else:
                 np.append(chars_inserted, '')
@@ -150,11 +131,14 @@ class CspCrossword:
         for cell in range(0, len(lemma_to_check)):
             cell_fill = self.board[1, y, cell] if direction == self.WORD_DIRECTION_X else self.board[1, cell, x]
             cell_result = self.board_result[0, y, cell] if direction == self.WORD_DIRECTION_X else self.board_result[0, cell, x]
+            print('is_possible_assignment: ', cell_fill, cell_result, direction)
             if cell_fill == 0:
                 continue
             elif cell_fill == 1 and cell_result == lemma_to_check[cell]:
                 continue
+            print('is_possible_assignment False: ', lemma_to_check)
             return False
+        print('is_possible_assignment True: ', lemma_to_check)
         return True
 
     def get_require_word_length(self, x, y, direction):
@@ -165,7 +149,27 @@ class CspCrossword:
                 return length
             else:
                 length += 1
-        return length
+        return board_slice.shape[0]  # length   EDITED !!!!!!!!
+
+    def is_needed_word_assign(self, x, y, direction):
+        if direction == self.WORD_DIRECTION_X:
+            is_word_beginning = (x == 0 or self.board[0, y, x - 1] == 1) and self.board[0, y, x] == 0
+            is_more_than_just_letter = self.board[0, y, x:].shape[0] > 1 and self.board[0, y, x + 1] == 0
+            is_required_word = is_more_than_just_letter and self.board[1, y, x + 1] == 0
+            print(is_word_beginning, is_more_than_just_letter, is_required_word, x, y, 'direction: ', direction)
+            if is_word_beginning and is_more_than_just_letter and is_required_word:
+                return True
+            else:
+                return False
+        else:
+            is_word_beginning = (y == 0 or self.board[0, y - 1, x] == 1) and self.board[0, y, x] == 0
+            is_more_than_just_letter = self.board[0, y:, x].shape[0] > 1 and self.board[0, y + 1, x] == 0
+            is_required_word = is_more_than_just_letter and self.board[1, y + 1, x] == 0
+            print(is_word_beginning, is_more_than_just_letter, is_required_word, x, y, 'direction: ', direction)
+            if is_word_beginning and is_more_than_just_letter and is_required_word:
+                return True
+            else:
+                return False
 
     # def start(self):
     #     print_title('CSP CROSSWORD: start')
