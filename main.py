@@ -5,6 +5,7 @@ import csv
 
 def main():
     csp_crossword = CspCrossword(11, 4)
+    # csp_crossword = CspCrossword(5, 7)
     lemmas = get_lemmas()
     csp_crossword.backward_assign_words(lemmas)
     csp_crossword.print_result()

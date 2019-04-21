@@ -56,7 +56,7 @@ class CspCrossword:
                                 chars_inserted_x = self.fill_board_with_word(lemma_x, row, col, self.WORD_DIRECTION_X)
 
                                 lemma_x_index = np.where(lemmas == lemma_x)[0][0]
-                                np.delete(lemmas, lemma_x_index)
+                                lemmas = np.delete(lemmas, lemma_x_index)
 
                                 is_next_assigned = self.backward_assign_words(lemmas)
 
@@ -80,7 +80,7 @@ class CspCrossword:
                                                                              self.WORD_DIRECTION_Y)
 
                                 lemma_y_index = np.where(lemmas == lemma_y)[0][0]
-                                np.delete(lemmas, lemma_y_index)
+                                lemmas = np.delete(lemmas, lemma_y_index)
 
                                 is_next_assigned = self.backward_assign_words(lemmas)
 
