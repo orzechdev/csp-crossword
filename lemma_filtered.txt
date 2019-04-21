@@ -6092,7 +6092,3 @@
 3231	2260	youngster	n
 1671	5686	youth	n
 2556	3223	zone	n
-2556	3223	large-rrrrr	my
-2556	3223	orrr	my
-2556	3223	aarr	my
-2556	3223	eerr	my
