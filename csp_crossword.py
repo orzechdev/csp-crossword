@@ -13,8 +13,8 @@ class CspCrossword:
         self.size_y = size_y
         print_title('CSP CROSSWORD: new board with size x=' + str(size_x) + ', y=' + str(size_y))
         self.board, self.board_result = self.init_board(size_x, size_y)
-        print(self.board)
-        print(self.board_result)
+        ## print(self.board)
+        ## print(self.board_result)
 
     def plot(self):
         cmap = colors.ListedColormap(['white', 'black'])
@@ -36,7 +36,7 @@ class CspCrossword:
 
     def print_result(self):
         print(self.board_result)
-        print(self.board)
+        # print(self.board)
 
     def backward_assign_words(self, lemmas):
         if np.sum(self.board[1]) + np.sum(self.board[0]) == self.size_x * self.size_y:
@@ -61,7 +61,7 @@ class CspCrossword:
                                 lemma_x_possible = self.is_possible_assignment(lemma_x, row, col, self.WORD_DIRECTION_X)
                                 if lemma_x_possible:
                                     chars_inserted_x = self.fill_board_with_word(lemma_x, row, col, self.WORD_DIRECTION_X)
-                                    print_title('CSP CROSSWORD: assigning possible words X check lemmas x=' + str(row) + ' y=' + str(col) + ' find: ' + lemma_x)
+                                    ## print_title('CSP CROSSWORD: assigning possible words X check lemmas x=' + str(row) + ' y=' + str(col) + ' find: ' + lemma_x)
 
                                     lemma_x_index = np.where(lemmas == lemma_x)[0][0]
                                     lemmas = np.delete(lemmas, lemma_x_index)
@@ -76,7 +76,7 @@ class CspCrossword:
                                                 lemma_y_possible = self.is_possible_assignment(lemma_y, row, col, self.WORD_DIRECTION_Y)
                                                 if lemma_y_possible:
                                                     chars_inserted_y = self.fill_board_with_word(lemma_y, row, col, self.WORD_DIRECTION_Y)
-                                                    print_title('CSP CROSSWORD: assigning possible words Y check lemmas x=' + str(row) + ' y=' + str(col) + ' find: ' + lemma_y)
+                                                    ## print_title('CSP CROSSWORD: assigning possible words Y check lemmas x=' + str(row) + ' y=' + str(col) + ' find: ' + lemma_y)
 
                                                     lemma_y_index = np.where(lemmas == lemma_y)[0][0]
                                                     lemmas = np.delete(lemmas, lemma_y_index)
@@ -112,7 +112,7 @@ class CspCrossword:
                                 # print(lemma_y)
                                 if lemma_y_possible:
                                     chars_inserted_y = self.fill_board_with_word(lemma_y, row, col, self.WORD_DIRECTION_Y)
-                                    print_title('CSP CROSSWORD: assigning possible words Y check lemmas x=' + str(row) + ' y=' + str(col) + ' find: ' + lemma_y)
+                                    ## print_title('CSP CROSSWORD: assigning possible words Y check lemmas x=' + str(row) + ' y=' + str(col) + ' find: ' + lemma_y)
 
                                     lemma_y_index = np.where(lemmas == lemma_y)[0][0]
                                     lemmas = np.delete(lemmas, lemma_y_index)
@@ -156,7 +156,7 @@ class CspCrossword:
                     #     self.board[1, col, row] = 1
                         # really?? none return?
 
-        print_title('CSP CROSSWORD: end assigning words')
+        ## print_title('CSP CROSSWORD: end assigning words')
 
         return False
 

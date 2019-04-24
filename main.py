@@ -1,16 +1,22 @@
 from csp_crossword import CspCrossword
 import numpy as np
 import csv
+import time
+
+from utils import print_title
 
 
 def main():
+    lemmas = get_lemmas()
+    start_backtracking_algorithm(2, 6, lemmas)
+
     # csp_crossword = CspCrossword(11, 4)
     # csp_crossword = CspCrossword(5, 7)
-    csp_crossword = CspCrossword(6, 6)
-    lemmas = get_lemmas()
-    csp_crossword.backward_assign_words(lemmas)
-    csp_crossword.print_result()
-    csp_crossword.plot()
+    # csp_crossword = CspCrossword(6, 6)
+    # lemmas = get_lemmas()
+    # csp_crossword.backward_assign_words(lemmas)
+    # csp_crossword.print_result()
+    # csp_crossword.plot()
 
 
 def get_lemmas():
@@ -19,6 +25,23 @@ def get_lemmas():
         for row in csv.reader(input_file, delimiter="\t"):
             lemmas.append(row)
     return np.array(lemmas)[:, 2]
+
+
+def start_backtracking_algorithm(size_min, size_max, lemmas):
+    for size_y in range(size_min, size_max + 1):
+        for size_x in range(size_min, size_max + 1):
+            print_title('CSP CROSSWORD: start')
+            print_title('CSP CROSSWORD: init square with size ' + str(size_y) + 'x' + str(size_x))
+            csp_crossword = CspCrossword(size_y, size_x)
+            print_title('CSP CROSSWORD: fill square with words (backward algorithm)')
+            start_time = time.time()
+            csp_crossword.backward_assign_words(lemmas)
+            end_time = time.time()
+            print('Time elapsed: ', end_time - start_time)
+            print('Result')
+            csp_crossword.plot()
+            csp_crossword.print_result()
+            print_title('CSP CROSSWORD: end')
 
 
 main()
