@@ -234,6 +234,26 @@ class CspCrossword:
             else:
                 return False
 
+    def is_needed_word_assign_forward(self, x, y, direction):
+        if direction == self.WORD_DIRECTION_X:
+            is_word_beginning = (y == 0 or self.board[0, y, x - 1] == 1) and self.board[0, y, x] == 0
+            is_more_than_just_letter = self.board[0, y, x:].shape[0] > 1 and self.board[0, y, x + 1] == 0
+            is_required_word = is_more_than_just_letter and self.board[1, y, x + 1] == 0
+            # print(is_word_beginning, is_more_than_just_letter, is_required_word, x, y, 'direction: ', direction)
+            if is_word_beginning and is_more_than_just_letter and is_required_word:
+                return True
+            else:
+                return False
+        else:
+            is_word_beginning = (x == 0 or self.board[0, y - 1, x] == 1) and self.board[0, y, x] == 0
+            is_more_than_just_letter = self.board[0, y:, x].shape[0] > 1 and self.board[0, y + 1, x] == 0
+            is_required_word = is_more_than_just_letter and self.board[1, y + 1, x] == 0
+            # print(is_word_beginning, is_more_than_just_letter, is_required_word, x, y, 'direction: ', direction)
+            if is_word_beginning and is_more_than_just_letter and is_required_word:
+                return True
+            else:
+                return False
+
     # def start(self):
     #     print_title('CSP CROSSWORD: start')
     #
@@ -282,12 +302,14 @@ class CspCrossword:
                             # square_possible_vals_copy = square_possible_vals.copy()
 
                             for lemma_x in lemmas_x:
+                                if col == 0 and row == 0:
+                                    print(lemma_x)
                                 # lemma_x_possible = self.is_possible_assignment(lemma_x, row, col, self.WORD_DIRECTION_X)
                                 # if lemma_x_possible:
 
                                 chars_inserted_x = self.fill_board_with_word(lemma_x, row, col, self.WORD_DIRECTION_X)
 
-                                lemma_x_index = np.where(lemmas == lemma_x)[0][0]
+                                lemma_x_index = np.where(lemmas == lemma_x)[0]
                                 square_possible_vals[row, col, self.WORD_DIRECTION_Y, lemma_x_index] = ''
 
                                 is_possible, square_possible_vals_next = self.is_possible_assignment_foreward_check(square_possible_opts, square_possible_vals, row, col, self.WORD_DIRECTION_X, lemma_x)
@@ -296,6 +318,7 @@ class CspCrossword:
 
                                 if is_possible and is_needed_word_y:
                                     print(lemma_x)
+                                    print(self.board_result)
                                     is_word_y = square_possible_opts[row, col, self.WORD_DIRECTION_Y]
                                     if is_word_y == 1:
                                         lemmas = square_possible_vals_next[row, col, self.WORD_DIRECTION_Y]
@@ -317,6 +340,7 @@ class CspCrossword:
                                             ## print_title('CSP CROSSWORD: assigning possible words Y check lemmas x=' + str(row) + ' y=' + str(col) + ' find: ' + lemma_y)
 
                                             if is_possible:
+                                                print(lemma_y)
                                                 print(self.board_result)
                                                 is_next_assigned = self.forward_assign_words(square_possible_opts, square_possible_vals_next_next)
 
@@ -328,12 +352,15 @@ class CspCrossword:
                                         # print_title('CSP CROSSWORD: assigning possible words Y check lemmas end ' + str(row) + str(col))
                                         # return False
 
-                                else:
-                                    print(self.board_result)
+                                elif is_possible:
                                     is_next_assigned = self.forward_assign_words(square_possible_opts, square_possible_vals)
-
                                     if is_next_assigned:
                                         return True
+                                #     print('!!!')
+                                #     # is_next_assigned = self.forward_assign_words(square_possible_opts, square_possible_vals)
+
+                                    # if is_next_assigned:
+                                    #     return True
 
                                 self.remove_word_from_board(chars_inserted_x, row, col, self.WORD_DIRECTION_X)
                                 square_possible_vals[row, col, self.WORD_DIRECTION_X, lemma_x_index] = lemma_x
@@ -345,7 +372,7 @@ class CspCrossword:
                             lemmas = square_possible_vals[row, col, self.WORD_DIRECTION_Y]
                             lemmas_y = lemmas[['' != lemma for lemma in lemmas]]
                             # print_title('CSP CROSSWORD: assigning possible words Y check lemmas start ' + str(row) + str(col))
-                            print(lemmas_y)
+                            # print(lemmas_y)
                             # square_possible_vals_copy = square_possible_vals.copy()
 
                             for lemma_y in lemmas_y:
@@ -361,6 +388,7 @@ class CspCrossword:
                                 ## print_title('CSP CROSSWORD: assigning possible words Y check lemmas x=' + str(row) + ' y=' + str(col) + ' find: ' + lemma_y)
 
                                 if is_possible:
+                                    print(lemma_y)
                                     print(self.board_result)
                                     is_next_assigned = self.forward_assign_words(square_possible_opts, square_possible_vals_next)
 

@@ -12,7 +12,7 @@ def main():
 
     # csp_crossword = CspCrossword(11, 4)
     # csp_crossword = CspCrossword(5, 7)
-    csp_crossword = CspCrossword(5, 3)
+    csp_crossword = CspCrossword(6, 5)
     # csp_crossword = CspCrossword(6, 6)
     lemmas = get_lemmas()
     # csp_crossword.backward_assign_words(lemmas)
@@ -21,7 +21,7 @@ def main():
 
     # Getp possible vals
 
-    square_possible_opts, square_possible_vals = csp_crossword.init_foreward_check_board(lemmas, 5, 3)
+    square_possible_opts, square_possible_vals = csp_crossword.init_foreward_check_board(lemmas, 6, 5)
     csp_crossword.forward_assign_words(square_possible_opts, square_possible_vals)
     csp_crossword.print_result()
     csp_crossword.plot()
